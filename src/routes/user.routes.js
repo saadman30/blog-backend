@@ -6,20 +6,12 @@ import {
   // logoutUser,
   registerController,
 } from "../controllers/user.controller.js";
+import { registrationValidation } from "../middlewares/validators/register.middleware.js";
 // import { upload } from "../middlewares/multer.middleware.js";
-// import { verifyJwt } from "../middlewares/auth.middleware.js";
-
+// import { verifyJwt } from "../middlewares/auth.middleware.js"
 const router = Router();
 
-router.route("/register").post(
-  // upload.fields([
-  //   {
-  //     name: "avatar",
-  //     maxCount: 1,
-  //   },
-  // ]),
-  registerController
-);
+router.route("/register").post(registrationValidation, registerController);
 
 // router.route("/login").post(loginUser);
 
