@@ -1,8 +1,8 @@
 import { Router } from "express";
 import {
+  loginController,
   // changeCurrentPassword,
   // getCurrentUser,
-  // loginUser,
   // logoutUser,
   registerController,
 } from "../controllers/user.controller.js";
@@ -13,7 +13,7 @@ const router = Router();
 
 router.route("/register").post(registrationValidation, registerController);
 
-// router.route("/login").post(loginUser);
+router.route("/login").post(loginController);
 
 // //secured routes
 // router.route("/logout").post(verifyJwt, logoutUser);

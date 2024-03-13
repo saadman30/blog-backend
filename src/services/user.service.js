@@ -58,4 +58,24 @@ const registerService = async (data) => {
   return { createdUser, accessToken, refreshToken };
 };
 
-export { registerService };
+const loginService = async (data) => {
+  const { email, password } = data;
+  
+  const user = await User.findOne({email});
+  
+  if (!user) {
+    throw new ApiError(HTTP_STATUS.NOT_FOUND.code, "Email does not exist");
+  }
+  const isPasswordCorrect = await user.isPasswordCorrect(password);
+  
+  if (!isPasswordCorrect) {
+    throw new ApiError(HTTP_STATUS.NOT_FOUND.code, "Password is incorrect");
+  }
+  const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
+    user._id
+  );
+  
+  return { accessToken, refreshToken };
+};
+
+export { registerService, loginService };
