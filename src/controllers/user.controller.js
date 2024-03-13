@@ -1,5 +1,9 @@
 import { HTTP_STATUS } from "../constants.js";
-import { loginService, registerService } from "../services/user.service.js";
+import {
+  changePasswordService,
+  loginService,
+  registerService,
+} from "../services/user.service.js";
 import { ApiError } from "../utils/ApiError.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import { asyncHandler } from "../utils/asyncHandler.js";
@@ -54,4 +58,16 @@ const loginController = asyncHandler(async (req, res) => {
     );
 });
 
-export { registerController, loginController };
+const changePasswordController = asyncHandler(async (req, res) => {
+  await changePasswordService(req);
+
+  return res.status(HTTP_STATUS.OK.code).json(
+    new ApiResponse(
+      HTTP_STATUS.OK.code,
+
+      "Password Changed successfully"
+    )
+  );
+});
+
+export { registerController, loginController, changePasswordController };

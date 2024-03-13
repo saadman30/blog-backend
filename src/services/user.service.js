@@ -60,22 +60,41 @@ const registerService = async (data) => {
 
 const loginService = async (data) => {
   const { email, password } = data;
-  
-  const user = await User.findOne({email});
-  
+
+  const user = await User.findOne({ email });
+
   if (!user) {
     throw new ApiError(HTTP_STATUS.NOT_FOUND.code, "Email does not exist");
   }
   const isPasswordCorrect = await user.isPasswordCorrect(password);
-  
+
   if (!isPasswordCorrect) {
     throw new ApiError(HTTP_STATUS.NOT_FOUND.code, "Password is incorrect");
   }
   const { accessToken, refreshToken } = await generateAccessAndRefreshToken(
     user._id
   );
-  
+
   return { accessToken, refreshToken };
 };
 
-export { registerService, loginService };
+const changePasswordService = async (data) => {
+  //take password from body
+  const { newPassword, oldPassword } = data.body;
+  //check jwt and get user from db
+  const user = await User.findById(data.user?.id);
+  if (!user) {
+    throw new ApiError(HTTP_STATUS.NOT_FOUND.code, "User does not exist");
+  }
+  // check if old password is correct
+  const isPasswordCorrect = await user.isPasswordCorrect(oldPassword);
+  if (!isPasswordCorrect) {
+    throw ApiResponse(400, "Invalid old password");
+  }
+  // change password with new password
+  user.password = newPassword;
+  await user.save({ validateBeforeSave: false });
+  return true;
+};
+
+export { registerService, loginService, changePasswordService };
